@@ -22,6 +22,18 @@ const Login = () => {
   // const [succssfulLogin, setSuccssfulLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const handleClick = () => setShow(!show);
+  const users = [
+    {
+      email: "admin@admin.com",
+      password: "admin123",
+      role: "admin",
+    },
+    {
+      email: "user@user.com",
+      password: "user123",
+      role: "user",
+    },
+  ];
   const {
     register,
     handleSubmit,
@@ -47,37 +59,58 @@ const Login = () => {
         message: "Password incorrect",
       });
     }
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/login`,
-        {
-          email: data.Email,
-          password: data.Password,
-        }
-      );
-      console.log(register?.data?.token);
-      if (response?.data?.user) {
-        console.log(response);
-        navigate("/profile", { state: { token: response?.data?.token } });
-      }
-    } catch (e) {
-      console.log(e);
-      if (e?.response?.data?.errors) {
-        let errors = e?.response?.data?.errors;
-        if (errors.email.length > 0) {
-          setError("Email", {
-            type: "manual",
-            message: errors.email,
-          });
-        }
-        if (errors.password.length > 0) {
-          setError("Password", {
-            type: "manual",
-            message: errors.password,
-          });
-        }
-      }
+    const matchedUser = users.find(
+      (user) => user.email === data.Email && user.password === data.Password
+    );
+
+    if (matchedUser) {
+      const userToStore = {
+        email: matchedUser.email,
+        role: matchedUser.role,
+      };
+      localStorage.setItem("currentUser", JSON.stringify(userToStore));
+      navigate("/");
+    } else {
+      setError("Email", {
+        type: "manual",
+        message: "Email or Password is incorrect",
+      });
+      setError("Password", {
+        type: "manual",
+        message: "Email or Password is incorrect",
+      });
     }
+    // try {
+    //   const response = await axios.post(
+    //     `${process.env.REACT_APP_BASE_URL}/login`,
+    //     {
+    //       email: data.Email,
+    //       password: data.Password,
+    //     }
+    //   );
+    //   console.log(register?.data?.token);
+    //   if (response?.data?.user) {
+    //     console.log(response);
+    //     navigate("/profile", { state: { token: response?.data?.token } });
+    //   }
+    // } catch (e) {
+    //   console.log(e);
+    //   if (e?.response?.data?.errors) {
+    //     let errors = e?.response?.data?.errors;
+    //     if (errors.email.length > 0) {
+    //       setError("Email", {
+    //         type: "manual",
+    //         message: errors.email,
+    //       });
+    //     }
+    //     if (errors.password.length > 0) {
+    //       setError("Password", {
+    //         type: "manual",
+    //         message: errors.password,
+    //       });
+    //     }
+    //   }
+    // }
     setIsLoading(false);
     // setSuccssfulLogin(true);
     // navigate('/profile')

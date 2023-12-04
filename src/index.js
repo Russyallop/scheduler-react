@@ -5,9 +5,8 @@ import { ChakraProvider, ColorModeScript, extendTheme } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
 
 const theme = extendTheme({
-  config: {
-    initialColorMode: "dark",
-    useSystemColorMode: false,
+  colors: {
+    white: "#ffffff",
   },
 });
 
