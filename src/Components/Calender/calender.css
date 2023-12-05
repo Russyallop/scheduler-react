@@ -36,6 +36,7 @@
   text-align: end;
   border-left: none;
   border-right: none;
+  border-bottom: none;
 }
 
 .rbc-header + .rbc-header {
@@ -104,6 +105,30 @@
 }
 .rbc-event-continues-after {
 }
+
+.rbc-today {
+  background-color: inherit;
+}
+
+.rbc-allday-cell {
+  display: none;
+}
+
+.rbc-timeslot-group {
+  min-height: 100px;
+}
+
+.rbc-current-time-indicator {
+  display: none;
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-top: none;
+}
+
+/* .rbc-time-column {
+  gap: 60px;
+} */
 
 /* These are just some of the classes you can style. Remember that the actual structure of 
 classes might differ based on the view being rendered and various other conditions. 

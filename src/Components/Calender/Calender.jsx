@@ -12,6 +12,7 @@ import {
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { enGB } from "date-fns/locale";
 import CustomToolbar from "./CustomToolbar";
+import CustomDayHeader from "./weekview_header";
 import "./calender.css";
 import { Box, Tooltip } from "@chakra-ui/react";
 const locales = {
@@ -30,11 +31,21 @@ const myEventsList = [
   {
     title: "5 hours",
     title_sm: "5 hrs",
-    start: new Date(2023, 11, 14, 6, 0),
+    start: new Date(2023, 11, 14, 4, 0),
     end: new Date(2023, 11, 14, 8, 0),
     availability: "available",
     description: "Availabe",
   },
+
+  {
+    title: "25 hours",
+    title_sm: "5 hrs",
+    start: new Date(2023, 11, 13, 6, 0),
+    end: new Date(2023, 11, 13, 8, 0),
+    availability: "available",
+    description: "Availabe",
+  },
+
   {
     title: "Fully Booked",
     title_sm: "Full",
@@ -224,12 +235,15 @@ const MyCalendar = (props) => {
         startAccessor="start"
         endAccessor="end"
         view={view}
-        style={{ height: 900 }}
+        style={{ height: 1000 }}
         views={["month", "week", "day"]}
         onView={handleViewChange}
         components={{
           toolbar: (props) => <CustomToolbar {...props} view={view} />,
           event: CustomEvent,
+          week: {
+            header: CustomDayHeader,
+          },
         }}
       />
     </Box>
