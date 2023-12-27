@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { isSameDay } from "date-fns";
 import {
   format,
   parse,
@@ -13,8 +12,10 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { enGB } from "date-fns/locale";
 import CustomToolbar from "./CustomToolbar";
 import CustomDayHeader from "./weekview_header";
+import EventModal from "./EventModal";
 import "./calender.css";
-import { Box, Tooltip } from "@chakra-ui/react";
+import { Box, Tooltip, useToast } from "@chakra-ui/react";
+import CalenderHeader from "../Headers/CalenderHeader";
 const locales = {
   "en-GB": enGB,
 };
@@ -27,127 +28,13 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const myEventsList = [
-  {
-    title: "5 hours",
-    title_sm: "5 hrs",
-    start: new Date(2023, 11, 14, 4, 0),
-    end: new Date(2023, 11, 14, 8, 0),
-    availability: "available",
-    description: "Availabe",
-  },
-
-  {
-    title: "25 hours",
-    title_sm: "5 hrs",
-    start: new Date(2023, 11, 13, 6, 0),
-    end: new Date(2023, 11, 13, 8, 0),
-    availability: "available",
-    description: "Availabe",
-  },
-
-  {
-    title: "Fully Booked",
-    title_sm: "Full",
-    start: new Date(2023, 11, 7, 10, 0),
-    end: new Date(2023, 11, 7, 20, 0),
-    availability: "booked",
-    description: "",
-  },
-  {
-    title: "2 hours",
-    title_sm: "2 hrs",
-    start: new Date(2023, 11, 1, 1, 0),
-    end: new Date(2023, 11, 1, 12, 0),
-    availability: "low",
-    description: "Low Availability",
-  },
-  {
-    title: "5 hours",
-    title_sm: "5 hrs",
-    start: new Date(2023, 11, 19, 6, 0),
-    end: new Date(2023, 11, 19, 8, 0),
-    availability: "available",
-    description: "Availabe",
-  },
-  {
-    title: "2 hours",
-    title_sm: "2 hrs",
-    start: new Date(2023, 11, 6, 10, 0),
-    end: new Date(2023, 11, 6, 12, 0),
-    availability: "low",
-    description: "Low Availability",
-  },
-  {
-    title: "2 hours",
-    title_sm: "2 hrs",
-    start: new Date(2023, 11, 28, 10, 0),
-    end: new Date(2023, 11, 28, 12, 0),
-    availability: "low",
-    description: "Low Availability",
-  },
-  {
-    title: "2 hours",
-    title_sm: "2 hrs",
-    start: new Date(2023, 11, 20, 10, 0),
-    end: new Date(2023, 11, 20, 12, 0),
-    availability: "low",
-    description: "Low Availability",
-  },
-  {
-    title: "5 hours",
-    title_sm: "5 hrs",
-    start: new Date(2023, 11, 21, 10, 0),
-    end: new Date(2023, 11, 21, 15, 0),
-    availability: "available",
-    description: "Available",
-  },
-  {
-    title: "5 hours",
-    title_sm: "5 hrs",
-    start: new Date(2023, 11, 5, 10, 0),
-    end: new Date(2023, 11, 5, 15, 0),
-    availability: "available",
-    description: "Available",
-  },
-  {
-    title: "5 hours",
-    title_sm: "5 hrs",
-    start: new Date(2023, 11, 25, 10, 0),
-    end: new Date(2023, 11, 25, 15, 0),
-    availability: "available",
-    description: "Available",
-  },
-  {
-    title: "Fully Booked",
-    title_sm: "Full",
-    start: new Date(2023, 11, 22, 10, 0),
-    end: new Date(2023, 11, 22, 20, 0),
-    availability: "booked",
-    description: "",
-  },
-  {
-    title: "Fully Booked",
-    title_sm: "Full",
-    start: new Date(2023, 11, 12, 10, 0),
-    end: new Date(2023, 11, 12, 20, 0),
-    availability: "booked",
-    description: "",
-  },
-  {
-    title: "Fully Booked",
-    title_sm: "Full",
-    start: new Date(2023, 11, 9, 10, 0),
-    end: new Date(2023, 11, 9, 20, 0),
-    availability: "booked",
-    description: "",
-  },
-  // ... other events
-];
-
 const MyCalendar = (props) => {
-  const [view, setView] = React.useState("month");
-
+  const toast = useToast();
+  const [view, setView] = useState("month");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const handleViewChange = (view) => {
     setView(view);
   };
@@ -178,20 +65,140 @@ const MyCalendar = (props) => {
       justifyContent: "center",
     };
 
-    if (event.availability === "low") {
-      newStyle.backgroundColor = "#FFF0BB";
-      newStyle.border = "2px solid #FFA959";
-    } else if (event.availability === "available") {
-      newStyle.backgroundColor = "#B0F0BA";
-      newStyle.border = "2px solid #75BF5C";
-    } else if (event.availability === "booked") {
-      newStyle.backgroundColor = "#FFD2E8";
-      newStyle.border = "2px solid #E1526C";
-    }
+    // if (event.availability === "low") {
+    //   newStyle.backgroundColor = "#FFF0BB";
+    //   newStyle.border = "2px solid #FFA959";
+    // } else if (event.availability === "available") {
+    newStyle.backgroundColor = "#B0F0BA";
+    newStyle.border = "2px solid #75BF5C";
+    // } else if (event.availability === "booked") {
+    //   newStyle.backgroundColor = "#FFD2E8";
+    //   newStyle.border = "2px solid #E1526C";
+    // }
 
     return {
       style: newStyle,
     };
+  };
+
+  const handleEventSelect = (event) => {
+    console.log(event);
+    setSelectedEvent(event);
+    setShowModal(true);
+  };
+
+  const handleSlotSelect = (slotInfo) => {
+    console.log(slotInfo);
+    setSelectedEvent(null);
+
+    const selectedDateStart = new Date(slotInfo.start);
+    const dayOfWeek = getDay(selectedDateStart);
+    const isWeekend =
+      isSaturday(selectedDateStart) || isSunday(selectedDateStart);
+
+    if (!isWeekend) {
+      // Set the 'end' to the end of the day instead of the start of the next day
+      // Here, we assume a full workday event from 9 AM to 5 PM as an example
+      const startOfWorkday = new Date(selectedDateStart.setHours(9, 0, 0, 0));
+      const endOfWorkday = new Date(selectedDateStart.setHours(17, 0, 0, 0));
+
+      // If your app requires the whole day event then you could set:
+      // const endOfDay = new Date(selectedDateStart.setHours(23, 59, 59, 999));
+
+      setSelectedSlot({ start: startOfWorkday, end: endOfWorkday });
+      setShowModal(true);
+    } else {
+      console.log("Events cannot be added on weekends.");
+      // Assuming 'toast' is defined and imported from Chakra-UI
+      toast({
+        title: "Events cannot be added on weekends.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  // ...
+
+  const handleFormSubmit = (formData) => {
+    // ... handling for existing events ...
+
+    let newEvents = [];
+    const eventToAdd = { ...formData, id: Math.random() };
+    newEvents.push(eventToAdd);
+
+    const currentMonth = new Date(formData.start).getMonth();
+    const endTime =
+      new Date(formData.end).getTime() - new Date(formData.start).getTime();
+
+    let currentDate = new Date(formData.start);
+
+    // Updated getNextDate logic
+    const getNextDate = {
+      "Every day": (date) => addDaySkippingWeekends(date),
+      "Every Week": (date) => addWeekSkippingWeekends(date),
+      "Every Fortnight": (date) => {
+        const nextDate = new Date(date.setDate(date.getDate() + 14));
+        return nextDate.getDay() === 0 || nextDate.getDay() === 6
+          ? addDaySkippingWeekends(nextDate)
+          : nextDate;
+      },
+      "Every Week Day": (date) => addDaySkippingWeekends(date),
+      // ... you can add more repetition options if needed ...
+    };
+
+    while (
+      formData.repeat &&
+      getNextDate[formData.repeat] &&
+      currentDate.getMonth() === currentMonth
+    ) {
+      currentDate = getNextDate[formData.repeat](currentDate);
+      if (currentDate.getMonth() !== currentMonth) {
+        break; // do not add events beyond the current month
+      }
+      newEvents.push({
+        ...formData,
+        id: Math.random(),
+        start: currentDate,
+        end: new Date(currentDate.getTime() + endTime),
+      });
+    }
+
+    setEvents([...events, ...newEvents]);
+
+    setSelectedEvent(null);
+    setShowModal(false);
+  };
+
+  const addDaySkippingWeekends = (date) => {
+    const nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 1); // add a day initially
+    while (nextDate.getDay() === 0 || nextDate.getDay() === 6) {
+      // 0 = Sunday, 6 = Saturday
+      nextDate.setDate(nextDate.getDate() + 1); // keep adding a day until it’s not a weekend
+    }
+    return nextDate;
+  };
+
+  const addWeekSkippingWeekends = (date) => {
+    let nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 7); // Add 7 days to the current date
+    // If the new date is a weekend, move to next Monday
+    while (nextDate.getDay() === 0 || nextDate.getDay() === 6) {
+      nextDate.setDate(nextDate.getDate() + 1);
+    }
+    return nextDate;
+  };
+
+  // ...
+
+  const handleDeleteEvent = (eventId) => {
+    setEvents(events.filter((event) => event.id !== eventId));
   };
 
   const CustomEvent = ({ event }) => {
@@ -203,50 +210,67 @@ const MyCalendar = (props) => {
           fontWeight="700"
           fontStyle="normal"
         >
-          {event.title}
+          {event.sessionName}
         </Box>
-        <Box
+        {/* <Box
           display={{ base: "block", md: "none" }}
           fontSize="12px"
           fontWeight="700"
           fontStyle="normal"
         >
           {event.title_sm}
-        </Box>
+        </Box> */}
         <Box
-          display={{ base: "none", md: "block" }}
-          fontSize="12px"
+          // display={{ base: "none", md: "block" }}
+          fontSize="14px"
           fontWeight="500"
           fontStyle="normal"
         >
-          {event.description}
+          {event.totalTime}
         </Box>
       </Box>
     );
   };
 
   return (
-    <Box bg="white" rounded={"10px"}>
-      <Calendar
-        localizer={localizer}
-        events={myEventsList}
-        dayPropGetter={dayPropGetter}
-        eventPropGetter={eventPropGetter}
-        startAccessor="start"
-        endAccessor="end"
-        view={view}
-        style={{ height: 1000 }}
-        views={["month", "week", "day"]}
-        onView={handleViewChange}
-        components={{
-          toolbar: (props) => <CustomToolbar {...props} view={view} />,
-          event: CustomEvent,
-          week: {
-            header: CustomDayHeader,
-          },
-        }}
-      />
-    </Box>
+    <>
+      <CalenderHeader />
+      <Box bg="white" rounded={"10px"}>
+        <Calendar
+          localizer={localizer}
+          events={events}
+          dayPropGetter={dayPropGetter}
+          eventPropGetter={eventPropGetter}
+          startAccessor="start"
+          endAccessor="end"
+          view={view}
+          style={{ height: 1000 }}
+          views={["month", "week", "day"]}
+          onView={handleViewChange}
+          onSelectSlot={handleSlotSelect}
+          onSelectEvent={handleEventSelect}
+          selectable={true}
+          components={{
+            toolbar: (props) => <CustomToolbar {...props} view={view} />,
+            event: CustomEvent,
+            week: {
+              header: CustomDayHeader,
+            },
+          }}
+        />
+      </Box>
+      {showModal && (
+        <EventModal
+          isOpen={showModal}
+          onClose={handleCloseModal}
+          onSubmit={handleFormSubmit}
+          selectedSlot={selectedSlot}
+          event={selectedEvent}
+          onDelete={handleDeleteEvent}
+          events={events}
+        />
+      )}
+    </>
   );
 };
 

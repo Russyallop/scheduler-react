@@ -18,13 +18,14 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FiMenu } from "react-icons/fi";
+
 import { IoClose } from "react-icons/io5";
-import MyCalender from "../Components/Calender/Calender";
+import { Link, Outlet } from "react-router-dom";
+import CalenderHeader from "../Components/Headers/CalenderHeader";
+import { FiMenu } from "react-icons/fi";
 
 export default function Sidebar() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  console.log(currentUser);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [dataToShowInSidebar, setDataToShowInSidebar] = useState("tutor");
   const [checkboxValues, setCheckboxValues] = useState({
@@ -76,9 +77,9 @@ export default function Sidebar() {
         </DrawerContent>
       </Drawer>
       <Box
-        ml={{ base: 0, md: "280px" }}
         display="flex"
-        flexDirection="column"
+        flexDir="column"
+        ml={{ base: 0, md: "280px" }}
         transition=".3s ease"
         h="100vh"
       >
@@ -88,11 +89,9 @@ export default function Sidebar() {
           justify={{ base: "space-between", md: "space-between" }}
           w="full"
           px="24px"
-          borderBottomWidth="1px"
-          // borderColor={useColorModeValue("inherit", "gray.500")}
-          bg={{ base: "#1D1D1D", md: "#F2F2F2" }}
-          boxShadow="sm"
+          bg="dull_black"
           color="black"
+          display={{ base: "flex", md: "none" }}
           py="24px"
         >
           <IconButton
@@ -108,10 +107,7 @@ export default function Sidebar() {
             color="black"
             fontWeight="500"
             display={{ base: "none", md: "block" }}
-          >
-            &#x25c0; Tutor list
-          </Box>
-
+          ></Box>
           <Box
             color="#2998FF"
             fontWeight="600"
@@ -120,56 +116,16 @@ export default function Sidebar() {
           >
             Logo
           </Box>
-
           <Box display={{ base: "block", md: "none" }}></Box>
-
-          <Flex
-            alignItems="center"
-            gap="15px"
-            display={{ base: "none", md: "flex" }}
-          >
-            <Avatar
-              ml="4"
-              size="md"
-              name="Ahmad"
-              src="https://avatars2.githubusercontent.com/u/37842853?v=4"
-              cursor="pointer"
-            />
-            <Text color="black" fontWeight="600" fontSize="24px">
-              Tutor name
-            </Text>
-          </Flex>
-
-          <Flex align="center" display={{ base: "none", md: "block" }}>
-            <Button
-              bg="black"
-              _hover={{
-                bg: "black",
-              }}
-              color="white"
-              rounded="40px"
-              w="100%"
-              py="12px"
-              fontSize="14px"
-              fontWeight="600"
-            >
-              Select multiple
-            </Button>
-          </Flex>
         </Flex>
-
         <Box
           as="main"
-          px={{ base: "0", md: "6" }}
-          py="3"
           flex="1"
           bg={useColorModeValue("#F2F2F2", "#F2F2F2")}
           color="black"
           overflow="auto"
         >
-          <Stack>
-            <MyCalender />
-          </Stack>
+          <Outlet />
         </Box>
       </Box>
     </Box>
@@ -244,6 +200,8 @@ const SidebarContent = ({
     {currentUser?.role === "admin" && (
       <Flex mt="30px" flexDirection="column" gap="15px">
         <Button
+          as={Link}
+          to="/"
           bg="white"
           _hover={{
             bg: "white",
@@ -278,6 +236,8 @@ const SidebarContent = ({
           Upcoming sessions
         </Button>
         <Button
+          as={Link}
+          to="/sessions"
           bg="black"
           _hover={{
             bg: "black",
@@ -325,40 +285,63 @@ const SidebarContent = ({
     {/* User */}
     {currentUser?.role === "user" && (
       <Flex mt="30px" flexDirection="column" gap="15px">
-        <Button
-          bg={dataToShowInSidebar === "tutor" ? "white" : "black"}
-          _hover={{
-            bg: dataToShowInSidebar === "tutor" ? "white" : "black",
-          }}
-          color={dataToShowInSidebar === "tutor" ? "black" : "white"}
-          rounded="40px"
-          w="100%"
-          py="12px"
-          fontSize="14px"
-          fontWeight="600"
-          onClick={() => {
-            setDataToShowInSidebar("tutor");
-          }}
-        >
-          Tutor list
-        </Button>
-        <Button
-          bg={dataToShowInSidebar === "bookings" ? "white" : "black"}
-          _hover={{
-            bg: dataToShowInSidebar === "bookings" ? "white" : "black",
-          }}
-          color={dataToShowInSidebar === "bookings" ? "black" : "white"}
-          rounded="40px"
-          w="100%"
-          py="12px"
-          fontSize="14px"
-          fontWeight="600"
-          onClick={() => {
-            setDataToShowInSidebar("bookings");
-          }}
-        >
-          My bookings
-        </Button>
+        <Link to="/book-session">
+          <Button
+            bg={dataToShowInSidebar === "book-session" ? "white" : "black"}
+            _hover={{
+              bg: dataToShowInSidebar === "book-session" ? "white" : "black",
+            }}
+            color={dataToShowInSidebar === "book-session" ? "black" : "white"}
+            rounded="40px"
+            w="100%"
+            py="12px"
+            fontSize="14px"
+            fontWeight="600"
+            onClick={() => {
+              setDataToShowInSidebar("book-session");
+            }}
+          >
+            Tutor list
+          </Button>
+        </Link>
+        <Link to="/mybookings">
+          <Button
+            bg={dataToShowInSidebar === "bookings" ? "white" : "black"}
+            _hover={{
+              bg: dataToShowInSidebar === "bookings" ? "white" : "black",
+            }}
+            color={dataToShowInSidebar === "bookings" ? "black" : "white"}
+            rounded="40px"
+            w="100%"
+            py="12px"
+            fontSize="14px"
+            fontWeight="600"
+            onClick={() => {
+              setDataToShowInSidebar("bookings");
+            }}
+          >
+            My bookings
+          </Button>
+        </Link>
+        <Link to="/settings">
+          <Button
+            bg={dataToShowInSidebar === "settings" ? "white" : "black"}
+            _hover={{
+              bg: dataToShowInSidebar === "settings" ? "white" : "black",
+            }}
+            color={dataToShowInSidebar === "settings" ? "black" : "white"}
+            rounded="40px"
+            w="100%"
+            py="12px"
+            fontSize="14px"
+            fontWeight="600"
+            onClick={() => {
+              setDataToShowInSidebar("settings");
+            }}
+          >
+            Settings
+          </Button>
+        </Link>
       </Flex>
     )}
 
