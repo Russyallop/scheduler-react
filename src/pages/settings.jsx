@@ -26,9 +26,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import SettingsHeader from "../Components/Headers/SettingsHeader";
 
 const settingsSchema = Yup.object().shape({
-  availability: Yup.string().required("Availability is required"),
-  start: Yup.date().required("Start date and time are required."),
-  end: Yup.date().required("End date and time are required."),
+  
+  earliestStartTime: Yup.string().required("Earliest start time is required"),
+  latestFinishTime: Yup.string().required("Latest finish time is required"),
+  availStartMonFri: Yup.string().required("Start time you are available from mon to fri is required"),
+  availFinishMonFri: Yup.string().required("Finish time mon to fri is required"),
+  availStartSat: Yup.string().required("Start time you are available on Saturday is required"),
+  availFinishSat: Yup.string().required("Finish time on Saturday is required"),
+  availStartSun: Yup.string().required("Start time you are available on Sunday is required"),
+  availFinishSun: Yup.string().required("Finish time on Sunday is required"),
 });
 const Settings = ({ handleNext, handlePrevious }) => {
   const [show, setShow] = useState(false);
@@ -41,6 +47,8 @@ const Settings = ({ handleNext, handlePrevious }) => {
     formState: { errors },
     watch,
   } = useForm({ resolver: yupResolver(settingsSchema) });
+
+  const { dirtyFields } = watch() || {};
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -67,73 +75,158 @@ const Settings = ({ handleNext, handlePrevious }) => {
             px={{ base: "15px", md: "24px" }}
             py={{ base: "40px", md: "32px" }}
           >
+ 
             <VStack>
               <Heading size="lg" fontWeight="600">
-                Settings
+                Calendar Settings
               </Heading>
             </VStack>
+            
             <VStack spacing={{ base: "15px", md: "20px" }} w="100%">
-              <FormControl mt="4" isInvalid={errors.start}>
-                <FormLabel>Start Date</FormLabel>
+              <FormControl mt="4" isInvalid={errors.earliestStartTime}>
+                <FormLabel>Earliest Time You Can Start</FormLabel>
 
                 <Input
-                  type="datetime-local"
+                  type="time"
                   borderWidth="1px"
                   borderColor="gray.300"
-                  {...register("start")}
+                  {...register("earliestStartTime")}
+                  defaultValue={watch("earliestStartTime") || "09:00"}
                   _hover={{
                     borderWidth: "1px",
                     borderColor: "gray.300",
                   }}
-                  sx={{
-                    "::-webkit-calendar-picker-indicator": {
-                      filter: "invert(1)",
-                      backgroundColor: "transparent",
-                    },
-                  }}
+                  
                 />
-                <FormErrorMessage>{errors.start?.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.earliestStartTime?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl mt={4} isInvalid={errors.end}>
-                <FormLabel>End Date</FormLabel>
+              <FormControl mt={4} isInvalid={errors.latestFinishTime}>
+                <FormLabel>Latest Time You Can Finish</FormLabel>
                 <Input
-                  type="datetime-local"
+                  type="time"
                   borderWidth="1px"
                   borderColor="gray.300"
-                  {...register("end")}
+                  {...register("latestFinishTime")}
+                  defaultValue={watch("latestFinishTime") || "17:00"}
                   _hover={{
                     borderWidth: "1px",
                     borderColor: "gray.300",
                   }}
-                  sx={{
-                    "::-webkit-calendar-picker-indicator": {
-                      filter: "invert(1)",
-                      backgroundColor: "transparent",
-                    },
-                  }}
+                  
                 />
-                <FormErrorMessage>{errors.end?.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.latestFinishTime?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isInvalid={errors.availability}>
-                <FormLabel>Availability</FormLabel>
-                <Select
-                  borderColor={errors.availability ? "#E1526C" : "border"}
-                  rounded="md"
+              <VStack>
+              <Heading size="lg" fontWeight="600">
+                Availability Settings
+              </Heading>
+            </VStack>
+
+              <FormControl mt={4} isInvalid={errors.availStartMonFri}>
+                <FormLabel>The Time You Are Available to Start From Mon-Fri</FormLabel>
+                <Input
+                  type="time"
+                  borderWidth="1px"
+                  borderColor="gray.300"
+                  {...register("availStartMonFri")}
+                  defaultValue={watch("availStartMonFri") || "09:00"}
                   _hover={{
-                    borderColor: "#616161",
+                    borderWidth: "1px",
+                    borderColor: "gray.300",
                   }}
-                  {...register("availability")}
-                >
-                  <option value="per_hour">Per hour</option>
-                  <option value="per_day">Per day</option>
-                  <option value="per_week">Per week</option>
-                </Select>
-                <FormErrorMessage>
-                  {errors.availability?.message}
-                </FormErrorMessage>
+                  
+                />
+                <FormErrorMessage>{errors.availStartMonFri?.message}</FormErrorMessage>
               </FormControl>
+
+              <FormControl mt={4} isInvalid={errors.availFinishMonFri}>
+                <FormLabel>The Time You Want to Finish Mon-Fri</FormLabel>
+                <Input
+                  type="time"
+                  borderWidth="1px"
+                  borderColor="gray.300"
+                  {...register("availStartMonFri")}
+                  defaultValue={watch("availFinishMonFri") || "17:00"}
+                  _hover={{
+                    borderWidth: "1px",
+                    borderColor: "gray.300",
+                  }}
+                  
+                />
+                <FormErrorMessage>{errors.availFinishMonFri?.message}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl mt={4} isInvalid={errors.availStartSat}>
+                <FormLabel>The Time You Are Available to Start From on Saturdays</FormLabel>
+                <Input
+                  type="time"
+                  borderWidth="1px"
+                  borderColor="gray.300"
+                  {...register("availStartSat")}
+                  defaultValue={watch("availStartSat") || "09:00"}
+                  _hover={{
+                    borderWidth: "1px",
+                    borderColor: "gray.300",
+                  }}
+                  
+                />
+                <FormErrorMessage>{errors.availStartSat?.message}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl mt={4} isInvalid={errors.availFinishSat}>
+                <FormLabel>The Time You Want to Finish on Saturdays</FormLabel>
+                <Input
+                  type="time"
+                  borderWidth="1px"
+                  borderColor="gray.300"
+                  {...register("availFinishSat")}
+                  defaultValue={watch("availFinishSat") || "13:00"}
+                  _hover={{
+                    borderWidth: "1px",
+                    borderColor: "gray.300",
+                  }}
+                  
+                />
+                <FormErrorMessage>{errors.availFinishSat?.message}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl mt={4} isInvalid={errors.availStartSun}>
+                <FormLabel>The Time You Are Available to Start From on Sundays</FormLabel>
+                <Input
+                  type="time"
+                  borderWidth="1px"
+                  borderColor="gray.300"
+                  {...register("availStartSun")}
+                  defaultValue={watch("availStartSun") || "12:00"}
+                  _hover={{
+                    borderWidth: "1px",
+                    borderColor: "gray.300",
+                  }}
+                  
+                />
+                <FormErrorMessage>{errors.availStartSun?.message}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl mt={4} isInvalid={errors.availFinishSun}>
+                <FormLabel>The Time You Want to Finish on Sundays</FormLabel>
+                <Input
+                  type="time"
+                  borderWidth="1px"
+                  borderColor="gray.300"
+                  {...register("availFinishSun")}
+                  defaultValue={watch("availFinishSun") || "19:00"}
+                  _hover={{
+                    borderWidth: "1px",
+                    borderColor: "gray.300",
+                  }}
+                  
+                />
+                <FormErrorMessage>{errors.availFinishSun?.message}</FormErrorMessage>
+              </FormControl>
+
+   
             </VStack>
 
             <VStack w="100%" mt={{ base: "15px", md: "30px" }}>
