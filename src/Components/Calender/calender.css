@@ -1,0 +1,208 @@
+Main Calendar Container .rbc-calendar {
+}
+
+/* Toolbar */
+.rbc-toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+.rbc-toolbar-label {
+}
+.rbc-btn-group {
+  border-radius: 20px;
+}
+.rbc-toolbar button {
+  border: none;
+  border-radius: 20px;
+}
+
+/* Navigation Buttons */
+.rbc-btn-group button {
+}
+
+/* Month View */
+.rbc-month-view {
+  border-top: none;
+}
+.rbc-month-header {
+}
+
+.rbc-month-row {
+}
+
+.rbc-header {
+  padding: 20px 0px;
+  text-align: end;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.rbc-header + .rbc-header {
+  border-left: none;
+}
+.rbc-day-bg {
+}
+
+/* Week and Day Views */
+.rbc-time-view {
+}
+.rbc-time-header {
+}
+.rbc-time-header-gutter {
+}
+.rbc-time-header-content {
+}
+.rbc-time-content {
+}
+
+/* Agenda View */
+.rbc-agenda-view {
+}
+.rbc-agenda-table {
+}
+.rbc-agenda-time-cell {
+}
+.rbc-agenda-event-cell {
+}
+.rbc-agenda-date-cell {
+}
+.rbc-agenda-content {
+}
+
+/* Events */
+
+.rbc-event-content {
+  /* height: 100%; */
+  text-align: center;
+}
+.rbc-event-content {
+}
+.rbc-event-label {
+}
+.rbc-event-overlaps {
+}
+
+/* Today */
+.rbc-today {
+}
+
+/* Selected */
+.rbc-selected {
+}
+
+/* Off-Range Days */
+.rbc-off-range {
+}
+.rbc-off-range-bg {
+}
+
+/* Event Overlapping */
+.rbc-event-allday {
+}
+.rbc-event-continues-prior {
+}
+.rbc-event-continues-after {
+}
+
+.rbc-today {
+  background-color: inherit;
+}
+
+.rbc-allday-cell {
+  display: none;
+}
+
+.rbc-timeslot-group {
+  min-height: 100px;
+}
+
+.rbc-current-time-indicator {
+  display: none;
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-top: none;
+}
+
+/* .rbc-time-column {
+  gap: 60px;
+} */
+
+/* These are just some of the classes you can style. Remember that the actual structure of 
+classes might differ based on the view being rendered and various other conditions. 
+Be sure to inspect the elements to get the exact classes being applied for specific 
+cases and views. You can use browser developer tools to inspect the rendered calendar 
+and determine the specific classes applied to the parts you're interested in styling.
+*/
+
+.rbc-date-cell {
+}
+
+/* calender.css */
+
+/* Assuming ".rbc-month-view" is the class applied to the month view cells container */
+
+/* calender.css */
+
+/* Increase the specificity with !important */
+.rbc-calendar .rbc-month-view .rbc-event {
+  height: 100% !important;
+  width: 100% !important;
+  max-height: 100% !important;
+  box-sizing: border-box; /* Handle padding and borders inside the box's specified width and height */
+}
+
+/* If you want to adjust padding and ensure the content fits */
+.rbc-calendar .rbc-month-view .rbc-event .rbc-event-content {
+  padding: 0 !important; /* Adjust padding based on your design */
+  font-size: 0.75em;
+  /* Smaller font size if needed */
+  white-space: normal; /* Allow text to wrap */
+}
+
+.rbc-row-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.rbc-row-content :nth-child(2) {
+  flex: 1;
+  z-index: 10;
+}
+.rbc-row-content :nth-child(1) {
+  /* position: relative; */
+  /* z-index: 10; */
+  /* padding-right: 10px; */
+}
+
+.rbc-row-segment {
+  padding: 5px 5px;
+  /* margin-top: -24px; */
+}
+
+.rbc-row-content .rbc-date-cell {
+}
+
+/* .rbc-time-content {
+  overflow-y: visible;
+} */
+
+@media (max-width: 1400px) {
+  .rbc-row-segment {
+    padding: 5px 5px;
+    margin-top: 0px;
+  }
+  .rbc-row-content :nth-child(2) {
+  }
+  .rbc-row-content :nth-child(1) {
+    flex: 1;
+    padding-right: 0px;
+  }
+  .rbc-row-content :nth-child(1) {
+    /* position: relative; */
+    /* z-index: 10; */
+    padding-right: 0px;
+  }
+}
